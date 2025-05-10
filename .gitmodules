@@ -1,0 +1,3 @@
+[submodule "ShogiCPU/YaneuraOu"]
+	path = ShogiCPU/YaneuraOu
+	url = git@github.com:yaneurao/YaneuraOu.git
