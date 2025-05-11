@@ -39,6 +39,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - "ssm:GetParameter"
+                  - "sqs:ReceiveMessage"
                   - "dynamodb:GetItem"
                   - "dynamodb:Query"
                   - "dynamodb:UpdateItem"
