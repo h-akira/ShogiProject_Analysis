@@ -41,6 +41,7 @@ Resources:
                   - "ssm:GetParameter"
                   - "sqs:ReceiveMessage"
                   - "sqs:DeleteMessage"
+                  - "sqs:GetQueueAttributes"
                   - "dynamodb:GetItem"
                   - "dynamodb:Query"
                   - "dynamodb:UpdateItem"
