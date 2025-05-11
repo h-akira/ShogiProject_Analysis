@@ -40,6 +40,7 @@ Resources:
                 Action:
                   - "ssm:GetParameter"
                   - "sqs:ReceiveMessage"
+                  - "sqs:DeleteMessage"
                   - "dynamodb:GetItem"
                   - "dynamodb:Query"
                   - "dynamodb:UpdateItem"
