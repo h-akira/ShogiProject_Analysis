@@ -70,7 +70,12 @@ def handler(event, context):
         },
         ExpressionAttributeValues={
           ':st': status,
-          ':re': json.dumps(result)
+          ':re': json.dumps(
+            {
+              "position": body['position'],
+              "result": result
+            }
+          )
         }
       )
       return None
