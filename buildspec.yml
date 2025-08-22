@@ -17,7 +17,7 @@ phases:
   pre_build:
     commands:
       - export ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-      - echo "Using AWS Account ID: $ACCOUNT_ID"
+      - echo "Using AWS Account ID:" $ACCOUNT_ID
       - curl -LS -o nn.7z https://github.com/yaneurao/YaneuraOu/releases/download/suisho5/Suisho5.7z
       - 7z x nn.7z
       - ls
