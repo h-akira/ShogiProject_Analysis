@@ -29,7 +29,7 @@ phases:
       - sed -i 's/^#TARGET_CPU = SSE42/TARGET_CPU = SSE42/' ShogiCPU/YaneuraOu/source/Makefile
       - |
         if ! aws ecr describe-repositories --repository-names "$ECR_REPOSITORY_NAME" --region $REGION > /dev/null 2>&1; then
-          echo "ECR repository not found. Creating $ECR_REPOSITORY ..."
+          echo "ECR repository not found. Creating $ECR_REPOSITORY_NAME ..."
           aws ecr create-repository --repository-name "$ECR_REPOSITORY_NAME" --region $REGION
         else
           echo "ECR repository $ECR_REPOSITORY_NAME already exists."
