@@ -7,6 +7,12 @@ Globals:
     Timeout: 30
     MemorySize: 2048
 
+Parameters:
+  DynamoDBTable:
+    Type: String
+    Default: 'table-sgp-pro-main'
+    Description: 'DynamoDB table name for the application.'
+
 Resources:
   SampleFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -14,6 +20,9 @@ Resources:
       PackageType: Image
       Role: !GetAtt LambdaExecutionRole.Arn
       FunctionName: 'lambda-sgp-analysis'
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./ShogiCPU

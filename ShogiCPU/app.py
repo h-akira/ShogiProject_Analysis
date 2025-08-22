@@ -4,12 +4,13 @@ import re
 import json
 import boto3
 import logging
+import os
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 ENGINE_PATH = "./YaneuraOu-by-gcc"
 MOVETIME = 3000  # ミリ秒
-MAIN_TABLE_NAME = "table-sgp-main"
+MAIN_TABLE_NAME = os.environ.get('DYNAMODB_TABLE', 'table-sgp-pro-main')
 
 def send(proc, cmd):
   print(f">>> {cmd}")
