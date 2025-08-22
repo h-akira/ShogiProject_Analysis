@@ -2,9 +2,8 @@ version: 0.2
 
 env:
   parameter-store:
-    DOCKERHUB_USERNAME: /Common/DockerHub/UserName
-    DOCKERHUB_ACCESSTOKEN: /Common/DockerHub/AccessToken
-    ACCOUNT_ID: /Common/AWS/AccountId
+    DOCKERHUB_USERNAME: /DockerHub/UserName
+    DOCKERHUB_ACCESSTOKEN: /DockerHub/AccessToken
   variables:
     REGION: ap-northeast-1
     ECR_REPOSITORY_NAME: shogi/sample/test01
@@ -17,6 +16,8 @@ phases:
   #     - pip3 install -r requirements.txt
   pre_build:
     commands:
+      - export ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      - echo "Using AWS Account ID: $ACCOUNT_ID"
       - curl -LS -o nn.7z https://github.com/yaneurao/YaneuraOu/releases/download/suisho5/Suisho5.7z
       - 7z x nn.7z
       - ls
