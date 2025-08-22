@@ -12,8 +12,27 @@ Parameters:
     Type: String
     Default: 'table-sgp-pro-main'
     Description: 'DynamoDB table name for the application.'
+  SQSQueueName:
+    Type: String
+    Default: 'sqs-sgp-analysis.fifo'
+    Description: 'SQS FIFO queue name for analysis tasks.'
 
 Resources:
+  AnalysisQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Ref SQSQueueName
+      FifoQueue: true
+      ContentBasedDeduplication: false
+      VisibilityTimeout: 120
+      MessageRetentionPeriod: 60
+      DelaySeconds: 0
+      ReceiveMessageWaitTimeSeconds: 0
+      MaximumMessageSize: 262144
+      DeduplicationScope: queue
+      FifoThroughputLimit: perQueue
+      SqsManagedSseEnabled: true
+  
   SampleFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -23,6 +42,16 @@ Resources:
       Environment:
         Variables:
           DYNAMODB_TABLE: !Ref DynamoDBTable
+          SQS_QUEUE_NAME: !Ref SQSQueueName
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt AnalysisQueue.Arn
+            BatchSize: 1
+            MaximumBatchingWindowInSeconds: 0
+            ScalingConfig:
+              MaximumConcurrency: 3
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./ShogiCPU
@@ -56,3 +85,14 @@ Resources:
                   - "dynamodb:UpdateItem"
                   - "dynamodb:DeleteItem"
                 Resource: "*"
+
+Outputs:
+  AnalysisQueueUrl:
+    Description: "SQS Queue URL for analysis tasks"
+    Value: !Ref AnalysisQueue
+  AnalysisQueueArn:
+    Description: "SQS Queue ARN for analysis tasks"
+    Value: !GetAtt AnalysisQueue.Arn
+  LambdaFunctionName:
+    Description: "Lambda function name for analysis"
+    Value: !Ref SampleFunction
