@@ -9,7 +9,6 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 ENGINE_PATH = "./YaneuraOu-by-gcc"
-MOVETIME = 3000  # ミリ秒
 MAIN_TABLE_NAME = os.environ.get('DYNAMODB_TABLE', 'table-sgp-pro-main')
 
 def send(proc, cmd):
@@ -37,7 +36,8 @@ def handler(event, context):
           {
             "username": "testuser",
             "aid": None,
-            "position": "lnsgkgsnl/1r5b1/p1pppp1p1/6p1p/9/2P6/PP1PPPPPP/1B5R1/LNSGKGSNL b - 1"
+            "position": "lnsgkgsnl/1r5b1/p1pppp1p1/6p1p/9/2P6/PP1PPPPPP/1B5R1/LNSGKGSNL b - 1",
+            "movetime": 3000
           }
         )
       }
@@ -47,8 +47,13 @@ def handler(event, context):
     logger.info(f"username: {body['username']}")
     logger.info(f"aid: {body['aid']}")
     logger.info(f"position: {body['position']}")
+
+    # Get movetime from message, default to 3000ms if not provided
+    movetime = body.get('movetime', 3000)
+    logger.info(f"movetime: {movetime}ms")
+
     try:
-      result = analysis(body['position'])
+      result = analysis(body['position'], movetime)
       status = "successed"
     except Exception as e:
       logger.error(f"Error: {e}")
@@ -81,7 +86,7 @@ def handler(event, context):
       )
       return None
 
-def analysis(SFEN):
+def analysis(SFEN, movetime=3000):
   # エンジン起動
   proc = subprocess.Popen(
     [ENGINE_PATH],
@@ -99,8 +104,8 @@ def analysis(SFEN):
   read_lines_until(proc, "readyok")
   # 局面セット＆思考開始
   send(proc, f"position sfen {SFEN}")
-  send(proc, f"go movetime {MOVETIME}")
-  time.sleep(MOVETIME / 1000 + 1)
+  send(proc, f"go movetime {movetime}")
+  time.sleep(movetime / 1000 + 1)
   # 出力を読み取る
   lines = []
   proc.stdin.write("quit\n")
