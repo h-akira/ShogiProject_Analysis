@@ -9,6 +9,7 @@ env:
     ECR_REPOSITORY_NAME: shogi/sample/test01
     DYNAMODB_TABLE: "table-sgp-pro-main"
     SQS_QUEUE_NAME: "sqs-sgp-analysis.fifo"
+    MAXIMUM_CONCURRENCY: "8"
 
 phases:
   # install:
@@ -40,4 +41,4 @@ phases:
   build:
     commands:
       - sam build
-      - sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --image-repository $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY_NAME --parameter-overrides ParameterKey=DynamoDBTable,ParameterValue=$DYNAMODB_TABLE ParameterKey=SQSQueueName,ParameterValue=$SQS_QUEUE_NAME
+      - sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --image-repository $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY_NAME --parameter-overrides ParameterKey=DynamoDBTable,ParameterValue=$DYNAMODB_TABLE ParameterKey=SQSQueueName,ParameterValue=$SQS_QUEUE_NAME ParameterKey=MaximumConcurrency,ParameterValue=$MAXIMUM_CONCURRENCY

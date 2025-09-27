@@ -16,6 +16,12 @@ Parameters:
     Type: String
     Default: 'sqs-sgp-analysis.fifo'
     Description: 'SQS FIFO queue name for analysis tasks.'
+  MaximumConcurrency:
+    Type: Number
+    Default: 8
+    Description: 'Maximum concurrent executions for SQS Lambda scaling.'
+    MinValue: 1
+    MaxValue: 100
 
 Resources:
   AnalysisQueue:
@@ -51,7 +57,7 @@ Resources:
             BatchSize: 1
             MaximumBatchingWindowInSeconds: 0
             ScalingConfig:
-              MaximumConcurrency: 3
+              MaximumConcurrency: !Ref MaximumConcurrency
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./ShogiCPU
